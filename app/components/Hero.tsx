@@ -7,11 +7,13 @@ export default function Hero() {
   return (
     <div className={styles.container}>
       <FogBackground
-        density={0.9}
-        speed={1.0}
-        warp={1.2}
-        tint="#9AE7FF"
-        pointerStrength={0.4}
+        density={1.35}
+        speed={1.15}
+        warp={1.60}
+        tint="#9BE9FF"
+        pointerStrength={0.55}
+        pointerRadius={0.42}
+        background="#0A0B14"
       />
       
       <div className={styles.content}>

@@ -10,14 +10,18 @@ interface FogBackgroundProps {
   warp?: number;
   tint?: string;
   pointerStrength?: number;
+  pointerRadius?: number;
+  background?: string;
 }
 
 export default function FogBackground({
-  density = 0.9,
-  speed = 1.0,
-  warp = 1.2,
-  tint = '#9AE7FF',
-  pointerStrength = 0.4,
+  density = 1.35,
+  speed = 1.15,
+  warp = 1.60,
+  tint = '#9BE9FF',
+  pointerStrength = 0.55,
+  pointerRadius = 0.42,
+  background = '#0A0B14',
 }: FogBackgroundProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const sceneRef = useRef<{
@@ -51,6 +55,7 @@ export default function FogBackground({
     renderer.setSize(window.innerWidth, window.innerHeight);
 
     const tintColor = new THREE.Color(tint);
+    const backgroundColor = new THREE.Color(background);
 
     const material = new THREE.ShaderMaterial({
       vertexShader,
@@ -62,8 +67,10 @@ export default function FogBackground({
         uWarp: { value: warp },
         uTint: { value: new THREE.Vector3(tintColor.r, tintColor.g, tintColor.b) },
         uPointerStrength: { value: prefersReducedMotion ? 0 : pointerStrength },
+        uPointerRadius: { value: pointerRadius },
         uPointer: { value: new THREE.Vector2(0.5, 0.5) },
         uResolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) },
+        uBackground: { value: new THREE.Vector3(backgroundColor.r, backgroundColor.g, backgroundColor.b) },
       },
       transparent: true,
       depthWrite: false,
@@ -185,7 +192,7 @@ export default function FogBackground({
         sceneRef.current = null;
       }
     };
-  }, [density, speed, warp, tint, pointerStrength]);
+  }, [density, speed, warp, tint, pointerStrength, pointerRadius, background]);
 
   return (
     <canvas
