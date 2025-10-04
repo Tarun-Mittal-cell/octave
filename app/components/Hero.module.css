@@ -15,7 +15,7 @@
   bottom: 0;
   background: inherit;
   opacity: 0;
-  animation: fogEntrance 500ms cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+  animation: fogEntrance 520ms cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
   pointer-events: none;
 }
 
@@ -75,7 +75,7 @@
 }
 
 .navItemActive {
-  color: #10B981;
+  color: #6EEBFF;
   position: relative;
 }
 
@@ -86,13 +86,13 @@
   left: 0;
   right: 0;
   height: 1px;
-  background: linear-gradient(90deg, transparent 0%, #10B981 50%, transparent 100%);
-  box-shadow: 0 0 8px rgba(16, 185, 129, 0.5);
+  background: linear-gradient(90deg, transparent 0%, #6EEBFF 50%, transparent 100%);
+  box-shadow: 0 0 20px rgba(110, 235, 255, 0.18);
 }
 
 .cta {
   padding: 0.65rem 1.75rem;
-  border: 1px solid rgba(16, 185, 129, 0.4);
+  border: 1px solid rgba(110, 235, 255, 0.4);
   border-radius: 24px;
   font-size: 12px;
   font-weight: 500;
@@ -105,9 +105,9 @@
 }
 
 .cta:hover {
-  border-color: rgba(16, 185, 129, 0.8);
-  box-shadow: 0 0 16px rgba(16, 185, 129, 0.3);
-  background: rgba(16, 185, 129, 0.05);
+  border-color: rgba(110, 235, 255, 0.8);
+  box-shadow: 0 0 16px rgba(110, 235, 255, 0.3);
+  background: rgba(110, 235, 255, 0.05);
 }
 
 .hero {
@@ -134,9 +134,9 @@
 }
 
 .headline {
-  font-size: clamp(56px, 12vw, 180px);
+  font-size: clamp(56px, 10vw, 180px);
   font-weight: 300;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.01em;
   line-height: 0.95;
   background: linear-gradient(180deg, #D6D6D6 0%, #8C8C8C 100%);
   -webkit-background-clip: text;
@@ -146,16 +146,51 @@
   text-align: center;
   text-transform: uppercase;
   position: relative;
-  filter: drop-shadow(0 0 40px rgba(155, 233, 255, 0.12)) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
-  opacity: 0;
-  transform: scale(0.985);
-  animation: tenzinEntrance 200ms cubic-bezier(0.22, 0.61, 0.36, 1.0) 100ms forwards;
+  filter: drop-shadow(0 0 40px rgba(110, 235, 255, 0.12)) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+  opacity: 0.05;
+  transform: scale(0.985) perspective(1000px) translateZ(-30px);
+  animation: tenzinDepthReveal 2000ms cubic-bezier(0.22, 0.61, 0.36, 1.0) 100ms forwards;
+  will-change: opacity, transform;
 }
 
-@keyframes tenzinEntrance {
-  to {
+@keyframes tenzinDepthReveal {
+  0% {
+    opacity: 0.05;
+    transform: scale(0.985) perspective(1000px) translateZ(-30px);
+    filter: drop-shadow(0 0 40px rgba(110, 235, 255, 0.12)) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3)) blur(2px);
+  }
+  40% {
+    opacity: 0.3;
+    filter: drop-shadow(0 0 40px rgba(110, 235, 255, 0.12)) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3)) blur(1px);
+  }
+  80% {
+    opacity: 0.95;
+    transform: scale(0.995) perspective(1000px) translateZ(-5px);
+    filter: drop-shadow(0 0 40px rgba(110, 235, 255, 0.12)) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3)) blur(0px);
+  }
+  100% {
     opacity: 1;
-    transform: scale(1.0);
+    transform: scale(1.0) perspective(1000px) translateZ(0px);
+    filter: drop-shadow(0 0 40px rgba(110, 235, 255, 0.18)) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+  }
+}
+
+/* Metallic shimmer sweep at 0.8s */
+.headline::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(110, 235, 255, 0.15), transparent);
+  animation: shimmerSweep 800ms cubic-bezier(0.4, 0.0, 0.2, 1) 900ms;
+  pointer-events: none;
+}
+
+@keyframes shimmerSweep {
+  to {
+    left: 200%;
   }
 }
 
@@ -174,17 +209,23 @@
 }
 
 .tagline {
-  font-size: clamp(14px, 1.8vw, 22px);
+  font-size: clamp(14px, 1.6vw, 20px);
   font-weight: 400;
   line-height: 1.6;
-  color: rgba(191, 191, 191, 0.85);
+  color: rgba(191, 191, 191, 0.84);
   text-align: center;
   max-width: 70ch;
-  margin: 2rem 0 0 0;
+  margin: 1.5rem 0 0 0;
   letter-spacing: 0.01em;
   opacity: 0;
   transform: translateY(6px);
-  animation: taglineEntrance 280ms cubic-bezier(0.25, 0.46, 0.45, 0.94) 450ms forwards;
+  animation: taglineEntrance 1000ms cubic-bezier(0.25, 0.46, 0.45, 0.94) 2500ms forwards;
+}
+
+@media (min-width: 768px) {
+  .tagline {
+    margin-top: 2rem;
+  }
 }
 
 @keyframes taglineEntrance {

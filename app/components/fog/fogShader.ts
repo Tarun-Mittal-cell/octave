@@ -19,6 +19,7 @@ export const fragmentShader = `
   uniform vec2 uPointer;
   uniform vec2 uResolution;
   uniform vec3 uBackground;
+  uniform float uDPR;
   
   varying vec2 vUv;
   
@@ -110,15 +111,23 @@ export const fragmentShader = `
     
     fog = pow(fog, 1.0 / uDensity);
     
-    float highlightMask = smoothstep(0.3, 0.7, fog);
-    vec3 tealGlow = uTint * highlightMask * 0.18;
+    float streak = fbm(warpedP * 3.2 + vec2(0.0, uTime * 0.0021 * uSpeed));
+    float hi = smoothstep(0.58, 0.86, fog + 0.08 * streak);
     
-    vec3 fogColor = mix(uBackground, uBackground + vec3(0.08, 0.08, 0.09), fog);
-    fogColor += tealGlow;
+    vec3 fogColor = mix(uBackground, mix(uBackground, uTint, 0.20), hi);
+    
+    float k = mix(0.30, 0.12, clamp(uDPR / 1.5, 0.0, 1.0));
+    vec2 texelSize = 1.0 / uResolution;
+    
+    float fogNear1 = fbm(warpedP + vec2(texelSize.x, 0.0));
+    float fogNear2 = fbm(warpedP - vec2(texelSize.x, 0.0));
+    float fogBlurred = fog * (1.0 - k) + k * 0.5 * (fogNear1 + fogNear2);
+    
+    fog = mix(fog, fogBlurred, k * 0.5);
     
     fogColor = pow(fogColor, vec3(0.9));
     
-    float alpha = fog * vignette * 0.92;
+    float alpha = fog * vignette * 0.94;
     
     vec3 dithered = fogColor + vec3(dither(gl_FragCoord.xy));
     

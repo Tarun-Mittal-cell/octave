@@ -15,12 +15,12 @@ interface FogBackgroundProps {
 }
 
 export default function FogBackground({
-  density = 1.35,
-  speed = 1.15,
-  warp = 1.60,
-  tint = '#9BE9FF',
+  density = 1.60,
+  speed = 1.08,
+  warp = 1.85,
+  tint = '#6EEBFF',
   pointerStrength = 0.55,
-  pointerRadius = 0.42,
+  pointerRadius = 0.44,
   background = '#0A0B14',
 }: FogBackgroundProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -71,6 +71,7 @@ export default function FogBackground({
         uPointer: { value: new THREE.Vector2(0.5, 0.5) },
         uResolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) },
         uBackground: { value: new THREE.Vector3(backgroundColor.r, backgroundColor.g, backgroundColor.b) },
+        uDPR: { value: initialDPR },
       },
       transparent: true,
       depthWrite: false,
@@ -114,12 +115,18 @@ export default function FogBackground({
       if (avgFPS < 50) {
         if (lowFpsStartTime === 0) {
           lowFpsStartTime = time;
-        } else if (time - lowFpsStartTime > 1000 && sceneRef.current.dpr > 0.75) {
-          sceneRef.current.dpr = Math.max(0.75, sceneRef.current.dpr - 0.25);
+        } else if (time - lowFpsStartTime > 1000 && sceneRef.current.dpr > 1.0) {
+          sceneRef.current.dpr = Math.max(1.0, sceneRef.current.dpr - 0.25);
           sceneRef.current.renderer.setPixelRatio(sceneRef.current.dpr);
           lowFpsStartTime = 0;
           console.log('Adaptive DPR: Reduced to', sceneRef.current.dpr);
         }
+      } else if (avgFPS > 58 && sceneRef.current.dpr < 1.5 && time - lowFpsStartTime > 1000) {
+        sceneRef.current.dpr = Math.min(1.5, sceneRef.current.dpr + 0.25);
+        sceneRef.current.renderer.setPixelRatio(sceneRef.current.dpr);
+        sceneRef.current.material.uniforms.uDPR.value = sceneRef.current.dpr;
+        console.log('Adaptive DPR: Increased to', sceneRef.current.dpr);
+      } else if (avgFPS < 50 || avgFPS > 58) {
       } else {
         lowFpsStartTime = 0;
       }
